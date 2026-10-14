@@ -1,0 +1,16 @@
+# Segredos e configurações locais
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Dados do Postgres, se algum dia for usado bind-mount
+pgdata/
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store

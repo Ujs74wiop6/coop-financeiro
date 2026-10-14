@@ -1,0 +1,50 @@
+# Três serviços, cada um no seu container e na sua porta:
+#   db        -> PostgreSQL        (5432)
+#   backend   -> API Flask         (5000)
+#   frontend  -> servidor estático (8080)
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Scripts nesta pasta rodam 1x, na criação do banco (volume vazio)
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db            # nome do serviço = hostname na rede do Docker
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRA_MINUTOS: ${JWT_EXPIRA_MINUTOS}
+      ADMIN_USUARIO: ${ADMIN_USUARIO}
+      ADMIN_SENHA: ${ADMIN_SENHA}
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy   # só sobe depois que o banco responde
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

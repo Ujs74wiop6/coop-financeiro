@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login - Financeiro da Cooperativa</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-login">
+  <main class="cartao-login">
+    <h1>Financeiro</h1>
+    <p class="subtitulo">Módulo financeiro · Cooperativa</p>
+
+    <form id="form-login" novalidate>
+      <label for="usuario">Usuário</label>
+      <input id="usuario" name="usuario" type="text" autocomplete="username" autofocus required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+
+      <p id="erro-login" class="erro" role="alert" hidden></p>
+
+      <button id="btn-entrar" type="submit" class="btn btn-primario btn-bloco">Entrar</button>
+    </form>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>
