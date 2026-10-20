@@ -1,0 +1,165 @@
+/* ---------- Variáveis de cor ---------- */
+:root {
+  --fundo: #f4f6f5;
+  --superficie: #ffffff;
+  --borda: #dbe1de;
+  --texto: #1f2a26;
+  --texto-suave: #5d6b65;
+  --primaria: #1d6b4f;
+  --primaria-escura: #15523c;
+  --perigo: #b3372f;
+  --aviso-fundo: #fdecea;
+  --ok-fundo: #e5f4ec;
+  --raio: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  line-height: 1.45;
+}
+
+[hidden] { display: none !important; }
+
+/* ---------- Botões ---------- */
+.btn {
+  font: inherit;
+  padding: 0.55rem 1rem;
+  border-radius: var(--raio);
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto);
+  cursor: pointer;
+}
+.btn:hover { background: #eef2f0; }
+.btn:focus-visible, input:focus-visible, select:focus-visible, .aba:focus-visible {
+  outline: 3px solid #8cc7ad;
+  outline-offset: 1px;
+}
+.btn:disabled { opacity: 0.6; cursor: wait; }
+.btn-primario { background: var(--primaria); border-color: var(--primaria); color: #fff; }
+.btn-primario:hover { background: var(--primaria-escura); }
+.btn-perigo { color: var(--perigo); border-color: #e3b5b1; }
+.btn-perigo:hover { background: var(--aviso-fundo); }
+.btn-mini { padding: 0.25rem 0.65rem; font-size: 0.875rem; }
+.btn-bloco { width: 100%; margin-top: 0.5rem; }
+
+/* ---------- Formulários ---------- */
+label { display: block; margin: 0.9rem 0 0.3rem; font-weight: 600; font-size: 0.9rem; }
+input[type="text"], input[type="password"], input[type="number"],
+input[type="date"], input[type="search"], select {
+  width: 100%;
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: #fff;
+}
+label.check { display: flex; gap: 0.5rem; align-items: center; font-weight: 400; }
+label.check input { width: 1.1rem; height: 1.1rem; }
+.erro { color: var(--perigo); margin: 0.8rem 0 0; font-size: 0.9rem; }
+.duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+/* ---------- Login ---------- */
+.pagina-login { display: grid; place-items: center; min-height: 100vh; padding: 1rem; }
+.cartao-login {
+  width: 100%; max-width: 380px; padding: 2rem;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: 12px;
+}
+.cartao-login h1 { margin: 0; color: var(--primaria); }
+.subtitulo { margin: 0.2rem 0 1rem; color: var(--texto-suave); }
+
+/* ---------- Topo e abas ---------- */
+.topo {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.8rem 1.5rem; background: var(--primaria); color: #fff;
+}
+.topo-usuario { display: flex; align-items: center; gap: 0.8rem; }
+.topo .btn-secundario { background: transparent; color: #fff; border-color: rgba(255,255,255,0.5); }
+.topo .btn-secundario:hover { background: rgba(255,255,255,0.15); }
+
+.abas { display: flex; gap: 0.25rem; padding: 0 1.5rem; background: var(--superficie); border-bottom: 1px solid var(--borda); }
+.aba {
+  text-decoration: none;
+  font: inherit; padding: 0.8rem 1.2rem; background: none; border: 0;
+  border-bottom: 3px solid transparent; color: var(--texto-suave); cursor: pointer;
+}
+.aba.ativa { color: var(--primaria); border-bottom-color: var(--primaria); font-weight: 600; }
+
+.conteudo { max-width: 1050px; margin: 1.5rem auto; padding: 0 1rem; }
+
+/* ---------- Resumo ---------- */
+.resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.8rem; margin-bottom: 1.2rem; }
+.card-resumo {
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio);
+  padding: 0.9rem 1.1rem; display: flex; flex-direction: column;
+}
+.card-resumo span { color: var(--texto-suave); font-size: 0.85rem; }
+.card-resumo strong { font-size: 1.35rem; }
+.card-resumo.alerta strong { color: var(--perigo); }
+.card-resumo.ok strong { color: var(--primaria); }
+
+/* ---------- Barra de ferramentas ---------- */
+.barra { display: flex; gap: 0.6rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.barra input[type="search"] { flex: 1 1 220px; width: auto; }
+.barra select { width: auto; }
+
+/* ---------- Tabela ---------- */
+.tabela-wrap { overflow-x: auto; background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio); }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 0.7rem 0.9rem; text-align: left; border-bottom: 1px solid var(--borda); white-space: nowrap; }
+td:first-child, td:nth-child(2) { white-space: normal; }  /* descrição e plano podem quebrar linha */
+tbody tr:last-child td { border-bottom: 0; }
+th { background: #eef2f0; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-suave); }
+tbody tr:hover { background: #f8faf9; }
+.num { text-align: right; }
+.acoes { text-align: right; }
+.acoes .btn + .btn { margin-left: 0.3rem; }
+.vazio { text-align: center; color: var(--texto-suave); padding: 2rem; }
+
+/* ---------- Selos de status (texto + cor, nunca só cor) ---------- */
+.selo { padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+.selo-paga { background: var(--ok-fundo); color: var(--primaria-escura); }
+.selo-vencida { background: var(--aviso-fundo); color: var(--perigo); }
+.selo-aberto { background: #fff4d6; color: #7a5a00; }
+
+/* ---------- Diálogos ---------- */
+dialog { border: 0; border-radius: 12px; padding: 1.5rem; width: min(480px, 92vw); box-shadow: 0 10px 40px rgba(0,0,0,0.25); }
+dialog::backdrop { background: rgba(20, 30, 26, 0.45); }
+dialog h2 { margin: 0 0 0.3rem; font-size: 1.2rem; }
+.rodape-dialogo { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.3rem; }
+
+@media (max-width: 560px) {
+  .duas-colunas { grid-template-columns: 1fr; }
+  .topo, .abas { padding-left: 0.8rem; padding-right: 0.8rem; }
+}
+
+/* ---------- Links com cara de botão e formulários em linha ---------- */
+a.btn { display: inline-block; text-decoration: none; }
+form.inline { display: inline; }
+.topo form { margin: 0; }
+
+/* ---------- Avisos (mensagens flash) ---------- */
+.aviso { padding: 0.75rem 1rem; border-radius: var(--raio); margin-bottom: 1rem; font-weight: 500; }
+.aviso-ok { background: var(--ok-fundo); color: var(--primaria-escura); border: 1px solid #b9dfca; }
+.aviso-erro { background: var(--aviso-fundo); color: var(--perigo); border: 1px solid #e3b5b1; }
+
+/* ---------- Página de formulário ---------- */
+.cartao-form {
+  max-width: 520px; margin: 0 auto; padding: 1.5rem 2rem 2rem;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: 12px;
+}
+.cartao-form h1 { margin: 0 0 0.5rem; font-size: 1.35rem; }
+.rodape-form { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
+.erro-pagina { text-align: center; padding: 3rem 1rem; }
+.barra form { display: contents; }
+
+/* Botão de perigo preenchido (usado no diálogo de confirmação) */
+.btn-perigo-cheio { background: var(--perigo); border-color: var(--perigo); color: #fff; }
+.btn-perigo-cheio:hover { background: #8f2a24; }
+.barra > form { display: flex; gap: 0.6rem; flex: 1 1 320px; }
+.barra > form input[type="search"] { flex: 1 1 auto; }

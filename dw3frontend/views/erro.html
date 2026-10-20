@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block titulo %}Erro - Financeiro da Cooperativa{% endblock %}
+
+{% block conteudo %}
+  <section class="erro-pagina">
+    <h1>Algo deu errado</h1>
+    <p>{{ mensagem }}</p>
+    <a class="btn btn-primario" href="{{ url_for('contas_pagar.lista') }}">Voltar ao início</a>
+  </section>
+{% endblock %}

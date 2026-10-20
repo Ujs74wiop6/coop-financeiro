@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Login - Financeiro da Cooperativa{% endblock %}
+{% block classe_body %}pagina-login{% endblock %}
+
+{% block corpo %}
+  <main class="cartao-login">
+    <h1>Financeiro</h1>
+    <p class="subtitulo">Módulo financeiro · Cooperativa</p>
+
+    {% for categoria, mensagem in get_flashed_messages(with_categories=true) %}
+      <div class="aviso aviso-{{ categoria }}" role="status">{{ mensagem }}</div>
+    {% endfor %}
+
+    <form method="post" action="{{ url_for('login.login') }}">
+      <label for="usuario">Usuário</label>
+      <input id="usuario" name="usuario" type="text" value="{{ usuario }}"
+             autocomplete="username" autofocus required>
+
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+
+      {% if erro %}<p class="erro" role="alert">{{ erro }}</p>{% endif %}
+
+      <button type="submit" class="btn btn-primario btn-bloco">Entrar</button>
+    </form>
+  </main>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Financeiro da Cooperativa{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block classe_body %}{% endblock %}">
+{% block corpo %}
+  <header class="topo">
+    <strong>Financeiro · Cooperativa</strong>
+    <form class="topo-usuario" method="post" action="{{ url_for('login.logout') }}">
+      <span>{{ session.usuario }}</span>
+      <button class="btn btn-secundario" type="submit">Sair</button>
+    </form>
+  </header>
+
+  <nav class="abas">
+    <a class="aba {% if request.blueprint == 'contas_pagar' %}ativa{% endif %}"
+       href="{{ url_for('contas_pagar.lista') }}">Contas a Pagar</a>
+    <a class="aba {% if request.blueprint == 'plano_contas' %}ativa{% endif %}"
+       href="{{ url_for('plano_contas.lista') }}">Plano de Contas</a>
+  </nav>
+
+  <main class="conteudo">
+    {% for categoria, mensagem in get_flashed_messages(with_categories=true) %}
+      <div class="aviso aviso-{{ categoria }}" role="status">{{ mensagem }}</div>
+    {% endfor %}
+
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <!-- Diálogo de confirmação de exclusão (controlado por public/js/app.js) -->
+  <dialog id="dlg-confirma">
+    <h2>Confirmar exclusão</h2>
+    <p id="texto-confirma"></p>
+    <div class="rodape-dialogo">
+      <button type="button" id="btn-cancelar" class="btn btn-secundario">Cancelar</button>
+      <button type="button" id="btn-confirmar" class="btn btn-perigo-cheio">Excluir</button>
+    </div>
+  </dialog>
+{% endblock %}
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

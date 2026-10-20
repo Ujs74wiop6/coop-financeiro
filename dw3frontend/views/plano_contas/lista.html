@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Plano de Contas - Financeiro da Cooperativa{% endblock %}
+
+{% block conteudo %}
+  <div class="barra">
+    <form method="get" action="{{ url_for('plano_contas.lista') }}">
+      <input type="search" name="q" value="{{ busca }}" placeholder="Buscar por código ou nome...">
+      <button class="btn" type="submit">Buscar</button>
+    </form>
+    <a class="btn btn-primario" href="{{ url_for('plano_contas.novo') }}">+ Novo plano</a>
+  </div>
+
+  <div class="tabela-wrap">
+    <table>
+      <thead>
+        <tr><th>Código</th><th>Nome</th><th class="acoes">Ações</th></tr>
+      </thead>
+      <tbody>
+        {% for p in planos %}
+        <tr>
+          <td>{{ p.codigo }}</td>
+          <td>{{ p.nome }}</td>
+          <td class="acoes">
+            <a class="btn btn-mini" href="{{ url_for('plano_contas.editar', id=p.id) }}">Editar</a>
+            <form class="inline" method="post"
+                  action="{{ url_for('plano_contas.excluir', id=p.id) }}"
+                  data-confirmar="Excluir o plano {{ p.codigo }} - {{ p.nome }}?">
+              <button class="btn btn-mini btn-perigo" type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" class="vazio">Nenhum plano encontrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

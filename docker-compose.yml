@@ -1,38 +1,32 @@
 # Três serviços, cada um no seu container e na sua porta:
 #   db        -> PostgreSQL        (5432)
-#   backend   -> API Flask         (5000)
-#   frontend  -> servidor estático (8080)
+#   backend   -> API Flask         (5000)   pasta dw3backend
+#   frontend  -> site Flask        (8080)   pasta dw3frontend
+#
+# As configurações ficam nos arquivos dw3backend/.env e dw3frontend/frontend.env
+# (copie dos arquivos .example na primeira vez).
 services:
   db:
     image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file: ./dw3backend/.env      # usa POSTGRES_DB, POSTGRES_USER e POSTGRES_PASSWORD
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Scripts nesta pasta rodam 1x, na criação do banco (volume vazio)
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./dw3backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      # $$ = o compose não interpreta; quem lê a variável é o shell do container
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 3s
       timeout: 3s
       retries: 10
 
   backend:
-    build: ./backend
+    build: ./dw3backend
+    env_file: ./dw3backend/.env
     environment:
-      DB_HOST: db            # nome do serviço = hostname na rede do Docker
-      DB_PORT: 5432
-      DB_NAME: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USER}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRA_MINUTOS: ${JWT_EXPIRA_MINUTOS}
-      ADMIN_USUARIO: ${ADMIN_USUARIO}
-      ADMIN_SENHA: ${ADMIN_SENHA}
+      DB_HOST: db                    # dentro do Docker, o banco se chama "db"
     ports:
       - "5000:5000"
     depends_on:
@@ -40,7 +34,10 @@ services:
         condition: service_healthy   # só sobe depois que o banco responde
 
   frontend:
-    build: ./frontend
+    build: ./dw3frontend
+    env_file: ./dw3frontend/frontend.env
+    environment:
+      BACKEND_URL: http://backend:5000/api   # o front chama a API pelo nome do serviço
     ports:
       - "8080:8080"
     depends_on:

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titulo %}{{ "Editar" if id else "Nova" }} conta a pagar{% endblock %}
+
+{% block conteudo %}
+  <section class="cartao-form">
+    <h1>{{ "Editar conta a pagar" if id else "Nova conta a pagar" }}</h1>
+
+    <form method="post">
+      <label for="descricao">Descrição</label>
+      <input id="descricao" name="descricao" type="text" maxlength="150"
+             value="{{ conta.descricao }}" required autofocus>
+
+      <label for="plano_conta_id">Plano de contas</label>
+      <select id="plano_conta_id" name="plano_conta_id" required>
+        {% for p in planos %}
+          <option value="{{ p.id }}" {{ "selected" if p.id == conta.plano_conta_id }}>
+            {{ p.codigo }} - {{ p.nome }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div class="duas-colunas">
+        <div>
+          <label for="valor">Valor (R$)</label>
+          <input id="valor" name="valor" type="number" step="0.01" min="0.01"
+                 value="{{ conta.valor }}" required>
+        </div>
+        <div>
+          <label for="data_vencimento">Vencimento</label>
+          <input id="data_vencimento" name="data_vencimento" type="date"
+                 value="{{ conta.data_vencimento }}" required>
+        </div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" name="pago" {{ "checked" if conta.pago }}> Já foi paga
+      </label>
+
+      {% if erro %}<p class="erro" role="alert">{{ erro }}</p>{% endif %}
+
+      <div class="rodape-form">
+        <a class="btn btn-secundario" href="{{ url_for('contas_pagar.lista') }}">Cancelar</a>
+        <button class="btn btn-primario" type="submit">Salvar</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}

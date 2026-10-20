@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}{{ "Editar" if id else "Novo" }} plano de contas{% endblock %}
+
+{% block conteudo %}
+  <section class="cartao-form">
+    <h1>{{ "Editar plano de contas" if id else "Novo plano de contas" }}</h1>
+
+    <form method="post">
+      <label for="codigo">Código</label>
+      <input id="codigo" name="codigo" type="text" maxlength="20" value="{{ plano.codigo }}"
+             placeholder="ex.: 3.1.01" required autofocus>
+
+      <label for="nome">Nome</label>
+      <input id="nome" name="nome" type="text" maxlength="100" value="{{ plano.nome }}" required>
+
+      {% if erro %}<p class="erro" role="alert">{{ erro }}</p>{% endif %}
+
+      <div class="rodape-form">
+        <a class="btn btn-secundario" href="{{ url_for('plano_contas.lista') }}">Cancelar</a>
+        <button class="btn btn-primario" type="submit">Salvar</button>
+      </div>
+    </form>
+  </section>
+{% endblock %}
