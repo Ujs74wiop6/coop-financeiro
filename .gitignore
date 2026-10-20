@@ -1,14 +1,13 @@
-# Segredos e configurações locais
+# Segredos e configurações locais (use os arquivos .example como modelo)
 .env
+frontend.env
 
 # Python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
-
-# Dados do Postgres, se algum dia for usado bind-mount
-pgdata/
+.pytest_cache/
 
 # Editor / SO
 .vscode/
