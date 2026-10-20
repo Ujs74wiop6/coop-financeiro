@@ -1,6 +1,8 @@
 # Referência da API
 
-Base URL: `http://localhost:5000/api` · Formato: JSON.
+Base URL: `http://localhost:5000/api` · Formato: JSON · Código em `dw3backend/routes/`.
+
+O site (`dw3frontend`) consome estas rotas pelo servidor, mas elas também podem ser chamadas direto (curl, Postman, Insomnia).
 
 Todas as rotas, **exceto** `/login` e `/health`, exigem o cabeçalho:
 
@@ -75,4 +77,12 @@ curl -s -X POST http://localhost:5000/api/contas-pagar \
 
 # 4) Sem token -> 401
 curl -s -i http://localhost:5000/api/contas-pagar
+```
+
+## Testes automatizados
+
+Os testes de `dw3backend/apps/*/tests/` chamam estas mesmas rotas (36 testes). Com os containers no ar:
+
+```bash
+docker compose exec backend pytest -v
 ```
