@@ -16,32 +16,147 @@ O front **nunca** acessa o banco: ele chama a API, e só a API fala com o Postgr
 
 ## Como rodar
 
-Pré-requisito: Docker com Docker Compose.
+### Pré-requisitos
+
+- Docker instalado e em execução;
+- Docker Compose disponível (`docker compose version`);
+- portas `5432`, `5000` e `8080` livres.
+
+### Primeira execução
+
+Na raiz do projeto, crie os arquivos de configuração a partir dos exemplos:
 
 ```bash
-# 1ª vez (se os arquivos de configuração ainda não existirem):
 cp dw3backend/.env.example dw3backend/.env
 cp dw3frontend/frontend.env.example dw3frontend/frontend.env
+```
 
+Depois, inicie os três serviços:
+
+```bash
 docker compose up --build
 ```
 
-Acesse **http://localhost:8080** e entre com `admin` / `admin123` (definidos no `dw3backend/.env`).
+Os serviços são iniciados nesta ordem:
 
-- Parar: `Ctrl+C` e `docker compose down`
-- Apagar também os dados do banco e recomeçar do zero: `docker compose down -v`
+1. `db`: PostgreSQL;
+2. `backend`: API Flask;
+3. `frontend`: site Flask.
 
-> O `init.sql` só roda quando o volume do banco está vazio. Se mudar o schema, use `docker compose down -v` antes de subir de novo.
+Quando os containers estiverem em execução:
 
-### Testes automatizados (back-end)
+- Site: **http://localhost:8080**
+- API: **http://localhost:5000**
+- Saúde da API: **http://localhost:5000/api/health**
 
-Com os containers no ar:
+Na tela de login, use o usuário e a senha definidos em `dw3backend/.env`.
+Com a configuração padrão, são `admin` e `admin123`.
+
+### Comandos principais
+
+Para iniciar em segundo plano:
+
+```bash
+docker compose up --build -d
+```
+
+Para conferir o estado dos serviços:
+
+```bash
+docker compose ps
+```
+
+Para acompanhar os logs:
+
+```bash
+docker compose logs -f
+```
+
+Para parar e remover os containers e a rede:
+
+```bash
+docker compose down
+```
+
+O banco usa o volume `pgdata`, portanto `docker compose down` preserva os dados.
+Para apagar os dados e recriar o banco do zero:
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+> O arquivo `dw3backend/database/init.sql` é executado automaticamente apenas quando o volume do PostgreSQL está vazio. Use `down -v` somente quando realmente quiser perder os dados locais.
+
+### Testes automatizados
+
+Os testes do back-end são testes de integração: usam as rotas Flask e o PostgreSQL
+dos containers. Com os serviços em execução, rode:
 
 ```bash
 docker compose exec backend pytest -v
 ```
 
-São 36 testes de integração: login, JWT (sem token, inválido, expirado, assinatura falsa), as 5 APIs de cada tabela, soft delete, validações e regras de negócio. Cada teste cria seus próprios dados e os apaga no final.
+Para executar somente os testes de login e JWT:
+
+```bash
+docker compose exec backend pytest -v apps/login/tests/test_login.py
+```
+
+Os demais grupos de testes ficam em:
+
+```text
+dw3backend/apps/plano_contas/tests/test_plano_contas.py
+dw3backend/apps/contas_pagar/tests/test_contas_pagar.py
+```
+
+Cada teste cria os dados necessários e realiza a limpeza ao final.
+
+### Testar a API manualmente
+
+As requisições podem ser feitas com `curl`, Postman ou Insomnia. Não há um arquivo
+`.rest` obrigatório no projeto; as rotas estão documentadas em
+[`docs/API.md`](docs/API.md).
+
+Verifique a API:
+
+```bash
+curl http://localhost:5000/api/health
+```
+
+Faça login e guarde o JWT em uma variável:
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:5000/api/login \
+  -H 'Content-Type: application/json' \
+  -d '{"usuario":"admin","senha":"admin123"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+```
+
+Consulte uma rota protegida:
+
+```bash
+curl http://localhost:5000/api/plano-contas \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Crie uma conta a pagar:
+
+```bash
+curl -X POST http://localhost:5000/api/contas-pagar \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"descricao":"Compra de materiais","valor":"250.00","data_vencimento":"2026-11-30","pago":false,"plano_conta_id":1}'
+```
+
+Uma rota protegida sem token deve responder `401`:
+
+```bash
+curl -i http://localhost:5000/api/contas-pagar
+```
+
+Consulte [`docs/API.md`](docs/API.md) para as rotas de CRUD, corpos JSON e códigos
+de resposta.
 
 ## Estrutura do projeto
 
@@ -109,9 +224,9 @@ erDiagram
     }
 ```
 
-Mais detalhes e demais diagramas em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). Referência das rotas em [`docs/API.md`](docs/API.md). Guia para explicar o projeto em [`docs/ROTEIRO_APRESENTACAO.md`](docs/ROTEIRO_APRESENTACAO.md).
+Mais detalhes e demais diagramas em [`docs/ARQUITETURA.md`](docs/ARQUITETURA.md). Referência das rotas em [`docs/API.md`](docs/API.md).
 
-## Conferência com o enunciado do PDF
+## Mapa de Conferência
 
 | Exigência | Onde está |
 |---|---|
