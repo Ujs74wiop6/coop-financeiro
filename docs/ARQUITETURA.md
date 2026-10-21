@@ -158,29 +158,3 @@ O registro **continua na tabela**; apenas deixa de aparecer, porque `GetAll` e `
 | Confirmar exclusão | `POST /contas-pagar/<id>/excluir` | `delete_conta_pagar(id)` | `DELETE /api/contas-pagar/<id>` | `delete` |
 
 > Os formulários HTML só enviam `GET` e `POST`. Por isso o **site** usa `POST` para editar e excluir; é o **servidor do site** quem chama a API com `PUT` e `DELETE`.
-
-## 7. Decisões de projeto
-
-| Decisão | Motivo |
-|---|---|
-| Estrutura `apps/<módulo>/{controller,model,tests}` + `routes` + `database` | Separa responsabilidades; cada arquivo é pequeno e fácil de explicar e testar. |
-| **Flask** nos dois lados | Poucas linhas por rota; a mesma ferramenta no front e no back. |
-| Front em Flask com **templates Jinja** | O HTML é montado no servidor; o JavaScript fica reduzido a um arquivo (confirmação de exclusão). |
-| JWT na **sessão (cookie HttpOnly)** do front | O JavaScript da página não consegue ler o token; atende ao requisito "JWT em cookie/localStorage". |
-| Sem **CORS** | O navegador só fala com `:8080`; quem chama `:5000` é o servidor do site (servidor → servidor), e CORS é uma regra só de navegadores. |
-| **SQL puro** (psycopg2), sem ORM | Mostra exatamente o que roda no banco; combina com o foco em dados. |
-| Parâmetros `%s` em todo SQL | Evita *SQL Injection*: o valor nunca é concatenado no texto do comando. |
-| Jinja com escape automático | Texto digitado não vira HTML/script (evita *XSS*). |
-| `NUMERIC(12,2)` para dinheiro | Não tem erro de arredondamento do `float`. |
-| Senha com **hash** (`werkzeug.security`) | Se o banco vazar, as senhas não ficam expostas. |
-| JWT `HS256` com expiração | O servidor não guarda sessão; o token carrega usuário e validade. |
-| Índice único parcial em `plano_contas.codigo` | Impede código repetido entre ativos, mas libera o código de um registro removido. |
-| Configurações em `.env` e `frontend.env` | Segredos fora do código e fora do Git; o `docker-compose` troca só o host (`db`, `backend`). |
-
-## 8. Limitações conhecidas (e como evoluir)
-
-- Os servidores do Flask (`app.run`) são para desenvolvimento/demonstração. Em produção: Gunicorn + Nginx.
-- Os formulários não têm token **CSRF**. O cookie `SameSite=Lax` reduz o risco; o próximo passo seria usar Flask-WTF.
-- O cookie de sessão do Flask é **assinado, mas não criptografado**: o usuário pode ler o JWT dele mesmo (e só dele). Mantê-lo `HttpOnly` impede que scripts da página o leiam.
-- Todos os usuários têm o mesmo nível de acesso (não há perfis).
-- Não há paginação; para milhares de registros seria necessário.
